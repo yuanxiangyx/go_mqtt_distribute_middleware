@@ -10,14 +10,15 @@ import (
 	"time"
 )
 
-func GetMqttClient(config *config.Config) mqtt.Client {
+func GetMqttClient(cfg *config.MqttConfig) mqtt.Client {
 	// Create MQTT client option
-	opts := mqtt.NewClientOptions().AddBroker(fmt.Sprintf("tcp://%s:%s", config.Broker, strconv.Itoa(config.Port)))
-	opts.SetClientID(config.ClientId)
-	opts.SetUsername(config.Username)
-	opts.SetPassword(config.Password)
+	opts := mqtt.NewClientOptions().AddBroker(fmt.Sprintf("tcp://%s:%s", cfg.Broker, strconv.Itoa(cfg.Port)))
+	opts.SetClientID(cfg.ClientId)
+	opts.SetUsername(cfg.Username)
+	opts.SetPassword(cfg.Password)
 	opts.SetCleanSession(true)
-	opts.SetKeepAlive(time.Duration(config.Alive) * time.Second)
+
+	opts.SetKeepAlive(time.Duration(cfg.Alive) * time.Second)
 	opts.SetDefaultPublishHandler(MessageDeal)
 
 	// Create client
@@ -30,14 +31,16 @@ func GetMqttClient(config *config.Config) mqtt.Client {
 }
 
 func MessageDeal(client mqtt.Client, msg mqtt.Message) {
-	// 处理接收到的消息
-	zap.S().Infof("Received message on topic: %s\nMessage: %s\n", msg.Topic(), string(msg.Payload()))
-	fmt.Printf("Received message on topic: %s\nMessage: %s\n", msg.Topic(), string(msg.Payload()))
+	// Process received messages
+	messageTopic := msg.Topic()
+	payLoad := string(msg.Payload())
+	zap.S().Infof("Received message on topic: %s\nMessage: %s\n", messageTopic, payLoad)
+	//fmt.Println("Received message on topic: %s\nMessage: %s\n", messageTopic, payLoad)
 }
 
 func Subscribe(c mqtt.Client, topic string, qos byte) {
 	if token := c.Subscribe(topic, qos, nil); token.Wait() && token.Error() != nil {
-		fmt.Println(token.Error())
+		zap.S().Info(token.Error())
 		os.Exit(1)
 	}
 }

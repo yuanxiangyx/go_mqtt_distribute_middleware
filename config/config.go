@@ -2,23 +2,34 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"path/filepath"
 )
 
 type Config struct {
-	*MqttConfig `json:"mqtt_config"`
-	*LogConfig  `json:"log_config"`
+	Brokers    []*MqttConfig `json:"mqtt_brokers"`
+	*LogConfig `json:"log_config"`
 }
 
 type MqttConfig struct {
-	ClientId string `json:"client_id"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Alive    int    `json:"alive"`
-	Broker   string `json:"broker"`
-	Port     int    `json:"port"`
+	ClientId     string     `json:"client_id"`
+	Username     string     `json:"username"`
+	Password     string     `json:"password"`
+	Alive        int        `json:"alive"`
+	Broker       string     `json:"broker"`
+	Port         int        `json:"port"`
+	SubDealSlice []*SubDeal `json:"sub_deal_config"`
+}
+
+type SubDeal struct {
+	SubId          string         `json:"sub_id"`
+	AppName        string         `json:"app_name"`
+	Enabled        string         `json:"enabled"`
+	CallbackMethod string         `json:"callbackMethod"`
+	ApiCallbackUrl string         `json:"apiCallbackUrl"`
+	Topics         []string       `json:"topics"`
+	ExcludeTopics  []string       `json:"excludeTopics"`
+	Retry          map[string]int `json:"retry"`
 }
 
 type LogConfig struct {
@@ -31,7 +42,7 @@ type LogConfig struct {
 
 var config = new(Config)
 
-func InitConfig() *Config {
+func InitConfig() (cfg *Config, err error) {
 	content, err := os.ReadFile("config.json")
 	// Check if the folder exists
 	dir, err := filepath.Abs(filepath.Dir("."))
@@ -40,14 +51,13 @@ func InitConfig() *Config {
 		_ = os.Mkdir(filepath.Join(dir, "logs"), 0777)
 	}
 	if err != nil {
-		fmt.Println(err)
-	}
-	if err != nil {
 		panic(err)
 	}
 	err = json.Unmarshal(content, &config)
+	//fmt.Println(string(content))
+	//os.Exit(0)
 	if err != nil {
 		panic(err)
 	}
-	return config
+	return config, err
 }
