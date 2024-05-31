@@ -1,0 +1,17 @@
+{
+  "mqtt_config": {
+    "client_id": "go-mqtt-client",
+    "username": "",
+    "password": "",
+    "alive": 60,
+    "broker": "127.0.0.1",
+    "port": 1883
+  },
+  "log_config": {
+    "level": "debug",
+    "filename": "logs/mqtt.log",
+    "maxsize": 1,
+    "max_age": 7,
+    "max_backups": 3
+  }
+}
