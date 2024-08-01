@@ -7,6 +7,12 @@ import (
 	"time"
 )
 
+func SubAllMqttMessage(cfg *config2.Config) {
+	for _, val := range cfg.Brokers {
+		mq.DealBrokerMessage(val)
+	}
+}
+
 func main() {
 	config, err := config2.InitConfig()
 	if err != nil {
@@ -16,8 +22,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	DealMqttMessage(config)
+	// Sub All Messages
+	SubAllMqttMessage(config)
 
 	go func() {
 
@@ -25,11 +31,5 @@ func main() {
 	// Loop to maintain client connectivity
 	for {
 		time.Sleep(10 * time.Millisecond)
-	}
-}
-
-func DealMqttMessage(cfg *config2.Config) {
-	for _, val := range cfg.Brokers {
-		mq.DealSubMessage(val)
 	}
 }

@@ -5,6 +5,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"go.uber.org/zap"
 	"mqtt_pro/config"
+	"regexp"
 	"strconv"
 	"time"
 )
@@ -33,41 +34,41 @@ func GetMqttClient(cfg *config.MqttConfig) mqtt.Client {
 
 func MessageDeal(client mqtt.Client, msg mqtt.Message) {
 	// Process received messages
+
 	messageTopic := msg.Topic()
 	payLoad := string(msg.Payload())
 	reader := client.OptionsReader()
 	clientId := reader.ClientID()
+
 	for _, broker := range mqttCfg.Brokers {
-		if clientId == broker.ClientId {
+		//fmt.Println(clientId, broker.ClientId)
+		if clientId != broker.ClientId {
+			continue
+		} else {
 			for _, SubDeal := range broker.SubDealSlice {
-				excludeFlag := false
 				for _, excludeTopic := range SubDeal.ExcludeTopics {
-					if messageTopic == excludeTopic {
-						excludeFlag = true
-						break
+					// match topic name
+					ok, err := regexp.MatchString(excludeTopic, messageTopic)
+					if err != nil {
+						zap.S().Errorf("%s", err)
+					}
+					// exclude topic
+					if ok {
+						continue
+					} else {
+						for _, url := range SubDeal.ApiCallbackUrl {
+							go DealSubscribeTopic(SubDeal.CallbackMethod, url, payLoad, SubDeal.Retry.MaxAttempts)
+						}
+						zap.S().Infof("ClientId：%s %s Message: %s", clientId, messageTopic, payLoad)
 					}
 				}
-				if !excludeFlag {
-					break
-				} else {
-					DealExcludeTopic()
-				}
 			}
-			zap.S().Infof("Received message on topic: %s\nMessage: %s\n", messageTopic, payLoad)
-		} else {
-			continue
 		}
 	}
-
-	//fmt.Printf("Received message on topic: %s\nMessage: %s\n", messageTopic, payLoad)
 }
 
-func DealExcludeTopic() {
-
-}
-
-func DealSubscribeTopic() {
-
+func DealSubscribeTopic(callbackMethod string, url string, payLoad string, retry int) {
+	fmt.Println(callbackMethod, url, payLoad)
 }
 
 func Subscribe(c mqtt.Client, topic string, qos byte) {
@@ -80,7 +81,7 @@ func Publish(c mqtt.Client, topic string, payload []byte) {
 	c.Publish(topic, 0, false, payload)
 }
 
-func DealSubMessage(cfg *config.MqttConfig) {
+func DealBrokerMessage(cfg *config.MqttConfig) {
 	// Subscription Topic
 	dvgList := cfg.SubDealSlice
 	for _, v := range dvgList {

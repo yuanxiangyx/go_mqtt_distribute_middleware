@@ -22,14 +22,18 @@ type MqttConfig struct {
 }
 
 type SubDeal struct {
-	SubId          string         `json:"sub_id"`
-	AppName        string         `json:"app_name"`
-	Enabled        string         `json:"enabled"`
-	CallbackMethod string         `json:"callbackMethod"`
-	ApiCallbackUrl string         `json:"apiCallbackUrl"`
-	Topics         []string       `json:"topics"`
-	ExcludeTopics  []string       `json:"excludeTopics"`
-	Retry          map[string]int `json:"retry"`
+	SubId          string      `json:"sub_id"`
+	AppName        string      `json:"app_name"`
+	Enabled        string      `json:"enabled"`
+	CallbackMethod string      `json:"callbackMethod"`
+	ApiCallbackUrl []string    `json:"apiCallbackUrl"`
+	Topics         []string    `json:"topics"`
+	ExcludeTopics  []string    `json:"excludeTopics"`
+	Retry          RetryConfig `json:"retry"`
+}
+
+type RetryConfig struct {
+	MaxAttempts int `json:"max_attempts"`
 }
 
 type LogConfig struct {
@@ -54,8 +58,6 @@ func InitConfig() (cfg *Config, err error) {
 		panic(err)
 	}
 	err = json.Unmarshal(content, &config)
-	//fmt.Println(string(content))
-	//os.Exit(0)
 	if err != nil {
 		panic(err)
 	}

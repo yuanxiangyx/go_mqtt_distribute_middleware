@@ -1,7 +1,7 @@
 {
   "mqtt_brokers": [
     {
-      "client_id": "go-mqtt-client",
+      "client_id": "go-mqtt-client-1",
       "username": "",
       "password": "",
       "alive": 60,
@@ -13,7 +13,9 @@
           "app_name": "",
           "enabled": "",
           "callbackMethod": "HTTP",
-          "apiCallbackUrl": "http://10.48.64.52:8101/api/vehicleManager/receive_vehicle_message/",
+          "apiCallbackUrl": [
+            "http://10.48.64.52:8101/api/vehicleManager/receive_vehicle_message/"
+          ],
           "topics": [
             "from/#"
           ],
@@ -27,7 +29,7 @@
       ]
     },
     {
-      "client_id": "go-mqtt",
+      "client_id": "go-mqtt-client-2",
       "username": "",
       "password": "",
       "alive": 60,
@@ -39,13 +41,13 @@
           "app_name": "",
           "enabled": "",
           "callbackMethod": "HTTP",
-          "apiCallbackUrl": "http://10.48.64.52:8101/api/vehicleManager/receive_vehicle_message/",
+          "apiCallbackUrl": [
+            "http://10.48.64.52:8101/api/vehicleManager/receive_vehicle_message/"
+          ],
           "topics": [
-            "to/#"
+            "from/#"
           ],
-          "excludeTopics": [
-            "from/v1/devicedata/bsm/"
-          ],
+          "excludeTopics": [],
           "retry": {
             "maxAttempts": 5
           }
