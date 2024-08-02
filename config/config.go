@@ -27,9 +27,14 @@ type SubDeal struct {
 	Enabled        string      `json:"enabled"`
 	CallbackMethod string      `json:"callbackMethod"`
 	ApiCallbackUrl []string    `json:"apiCallbackUrl"`
-	Topics         []string    `json:"topics"`
+	Topics         []TopicCfg  `json:"topics"`
 	ExcludeTopics  []string    `json:"excludeTopics"`
 	Retry          RetryConfig `json:"retry"`
+}
+
+type TopicCfg struct {
+	Topic string `json:"topic"`
+	Qos   byte   `json:"qos"`
 }
 
 type RetryConfig struct {

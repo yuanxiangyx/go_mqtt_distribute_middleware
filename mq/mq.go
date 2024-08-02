@@ -87,7 +87,7 @@ func DealBrokerMessage(cfg *config.MqttConfig) {
 	for _, v := range dvgList {
 		c := GetMqttClient(cfg)
 		for _, topic := range v.Topics {
-			Subscribe(c, topic, 0)
+			Subscribe(c, topic.Topic, topic.Qos)
 		}
 	}
 }

@@ -17,7 +17,10 @@
             "http://10.48.64.52:8101/api/vehicleManager/receive_vehicle_message/"
           ],
           "topics": [
-            "from/#"
+            {
+              "topic": "from/#",
+              "qos": 0
+            }
           ],
           "excludeTopics": [
             "from/v1/devicedata/bsm/"
@@ -45,7 +48,10 @@
             "http://10.48.64.52:8101/api/vehicleManager/receive_vehicle_message/"
           ],
           "topics": [
-            "from/#"
+            {
+              "topic": "from/#",
+              "qos": 0
+            }
           ],
           "excludeTopics": [],
           "retry": {
