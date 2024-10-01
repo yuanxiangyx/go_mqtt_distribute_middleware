@@ -9,11 +9,10 @@
       "broker_port": 1883,
       "sub_deal_config": [
         {
-          "sub_id": "",
-          "app_name": "",
-          "enabled": "",
+          "app_name": "test1",
+          "enabled": true,
           "callbackMethod": "HTTP",
-          "apiCallbackUrl": [
+          "callbackUrl": [
             "http://10.48.64.52:8101/api/vehicleManager/receive_vehicle_message/"
           ],
           "subTopic": {
@@ -23,9 +22,7 @@
           "excludeTopics": [
             "from/v1/devicedata/bsm/"
           ],
-          "retry": {
-            "maxAttempts": 5
-          }
+          "retry": 5
         }
       ]
     },
@@ -41,7 +38,7 @@
           "sub_id": "",
           "app_name": "",
           "enabled": "",
-          "callbackMethod": "HTTP",
+          "callbackMethod": "GRPC",
           "apiCallbackUrl": [
             "http://10.48.64.52:8101/api/vehicleManager/receive_vehicle_message/"
           ],
