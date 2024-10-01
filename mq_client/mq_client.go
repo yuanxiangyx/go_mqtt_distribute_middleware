@@ -1,11 +1,9 @@
-package mq
+package mq_client
 
 import (
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"go.uber.org/zap"
 	"mqtt_pro/config"
-	"regexp"
 	"strconv"
 	"time"
 )
@@ -41,34 +39,38 @@ func MessageDeal(client mqtt.Client, msg mqtt.Message) {
 	clientId := reader.ClientID()
 
 	for _, broker := range mqttCfg.Brokers {
-		//fmt.Println(clientId, broker.ClientId)
+
 		if clientId != broker.ClientId {
 			continue
-		} else {
-			for _, SubDeal := range broker.SubDealSlice {
-				for _, excludeTopic := range SubDeal.ExcludeTopics {
-					// match topic name
-					ok, err := regexp.MatchString(excludeTopic, messageTopic)
-					if err != nil {
-						zap.S().Errorf("%s", err)
-					}
-					// exclude topic
-					if ok {
-						continue
-					} else {
-						for _, url := range SubDeal.ApiCallbackUrl {
-							go DealSubscribeTopic(SubDeal.CallbackMethod, url, payLoad, SubDeal.Retry.MaxAttempts)
-						}
-						zap.S().Infof("ClientId：%s %s Message: %s", clientId, messageTopic, payLoad)
-					}
-				}
-			}
 		}
+		fmt.Println(messageTopic, payLoad)
+		//if clientId == "go-mqtt-client-1" {
+		//	fmt.Println(clientId, broker.ClientId)
+		//	fmt.Println(messageTopic)
+		//	for _, SubDeal := range broker.SubDealSlice {
+		//		for _, excludeTopic := range SubDeal.ExcludeTopics {
+		//			// match topic name
+		//			//fmt.Println(excludeTopic, messageTopic)
+		//			ok, err := regexp.MatchString(excludeTopic, messageTopic)
+		//			if err != nil {
+		//				zap.S().Errorf("%s", err)
+		//			}
+		//			// exclude topic
+		//			if ok {
+		//				continue
+		//			}
+		//			for _, url := range SubDeal.ApiCallbackUrl {
+		//				go DealSubscribeTopic(SubDeal.CallbackMethod, url, payLoad, SubDeal.Retry.MaxAttempts)
+		//			}
+		//			zap.S().Infof("ClientId：%s %s Message: %s", clientId, messageTopic, payLoad)
+		//		}
+		//	}
+		//}
 	}
 }
 
 func DealSubscribeTopic(callbackMethod string, url string, payLoad string, retry int) {
-	fmt.Println(callbackMethod, url, payLoad)
+	//fmt.Println(callbackMethod, url, payLoad)
 }
 
 func Subscribe(c mqtt.Client, topic string, qos byte) {

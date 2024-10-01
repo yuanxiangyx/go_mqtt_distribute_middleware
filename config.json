@@ -5,8 +5,8 @@
       "username": "",
       "password": "",
       "alive": 60,
-      "broker": "127.0.0.1",
-      "port": 1883,
+      "broker_ip": "10.3.1.137",
+      "broker_port": 1883,
       "sub_deal_config": [
         {
           "sub_id": "",
@@ -16,12 +16,10 @@
           "apiCallbackUrl": [
             "http://10.48.64.52:8101/api/vehicleManager/receive_vehicle_message/"
           ],
-          "topics": [
-            {
-              "topic": "from/#",
-              "qos": 0
-            }
-          ],
+          "subTopic": {
+            "topic": "from/v1/#",
+            "qos": 0
+          },
           "excludeTopics": [
             "from/v1/devicedata/bsm/"
           ],
@@ -36,8 +34,8 @@
       "username": "",
       "password": "",
       "alive": 60,
-      "broker": "127.0.0.1",
-      "port": 1883,
+      "broker_ip": "10.3.1.137",
+      "broker_port": 1883,
       "sub_deal_config": [
         {
           "sub_id": "",
@@ -47,13 +45,13 @@
           "apiCallbackUrl": [
             "http://10.48.64.52:8101/api/vehicleManager/receive_vehicle_message/"
           ],
-          "topics": [
-            {
-              "topic": "from/#",
-              "qos": 0
-            }
+          "subTopic": {
+            "topic": "from/v1/#",
+            "qos": 0
+          },
+          "excludeTopics": [
+            "from/v1/devicedata/bsm/"
           ],
-          "excludeTopics": [],
           "retry": {
             "maxAttempts": 5
           }
@@ -62,7 +60,7 @@
     }
   ],
   "log_config": {
-    "level": "debug",
+    "level": "info",
     "filename": "logs/mqtt.log",
     "maxsize": 1,
     "max_age": 7,
