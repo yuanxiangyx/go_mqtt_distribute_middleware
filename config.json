@@ -33,7 +33,7 @@
       "broker_ip": "127.0.0.1",
       "broker_port": 1883,
       "sub_deal_config": {
-        "app_name": "test1",
+        "app_name": "test2",
         "app_id": "123",
         "enabled": true,
         "callbackMethod": "HTTP",
