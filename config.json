@@ -7,32 +7,7 @@
       "alive": 60,
       "broker_ip": "127.0.0.1",
       "broker_port": 1883,
-      "sub_deal_config":{
-          "app_name": "test1",
-          "app_id": "123",
-          "enabled": true,
-          "callbackMethod": "HTTP",
-          "callbackAddress": [
-            "http://127.0.0.1:8000/api/test"
-          ],
-          "subTopic": {
-            "topic": "from/v1/#",
-            "qos": 0
-          },
-          "excludeTopics": [
-            "from/v1/bsm/"
-          ],
-          "retry": 5
-        }
-    },
-    {
-      "client_id": "go-mqtt-client-2",
-      "username": "",
-      "password": "",
-      "alive": 60,
-      "broker_ip": "127.0.0.1",
-      "broker_port": 1883,
-      "sub_deal_config":{
+      "sub_deal_config": {
         "app_name": "test1",
         "app_id": "123",
         "enabled": true,
@@ -45,7 +20,32 @@
           "qos": 0
         },
         "excludeTopics": [
-          "from/v1/bsm/"
+          "from/v1/aaa/"
+        ],
+        "retry": 5
+      }
+    },
+    {
+      "client_id": "go-mqtt-client-2",
+      "username": "",
+      "password": "",
+      "alive": 60,
+      "broker_ip": "127.0.0.1",
+      "broker_port": 1883,
+      "sub_deal_config": {
+        "app_name": "test1",
+        "app_id": "123",
+        "enabled": true,
+        "callbackMethod": "HTTP",
+        "callbackAddress": [
+          "http://127.0.0.1:8000/api/test2"
+        ],
+        "subTopic": {
+          "topic": "from/v1/#",
+          "qos": 0
+        },
+        "excludeTopics": [
+          "from/v1/aaa/"
         ],
         "retry": 5
       }

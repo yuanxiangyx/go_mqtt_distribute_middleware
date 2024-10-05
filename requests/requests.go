@@ -1,10 +1,11 @@
-package utils
+package requests
 
 import (
 	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"go.uber.org/zap"
 	"io"
 	"net/http"
 	"time"
@@ -17,17 +18,17 @@ type HttpConfig struct {
 
 // Args 参数结构体
 type Args struct {
-	Url     string                 `json:"Url"`     // 请求URL     处理
-	Data    map[string]interface{} `json:"Data"`    // 请求体数据   处理
-	Params  map[string]string      `json:"Params"`  // 请求参数     处理
-	Headers map[string]string      `json:"Headers"` // 请求头数据   处理
-	Json    map[string]string      `json:"Json"`    // Json类型请求体   处理
+	Url     string                 `json:"Url"`
+	Data    map[string]interface{} `json:"Data"`
+	Params  map[string]string      `json:"Params"`
+	Headers map[string]string      `json:"Headers"`
+	Json    map[string]string      `json:"Json"`
 
-	Cookies map[string]string `json:"Cookies"` // Cookies  处理
-	TimeOut int               `json:"TimeOut"` // 超时时间  处理
-	Proxies map[string]string `json:"Proxies"` // 代理
-	//Verify  bool                   `json:"Verify"`  // 安全认证
-	//Cert    bool                   `json:"Cert"`    // 证书
+	Cookies map[string]string `json:"Cookies"`
+	TimeOut int               `json:"TimeOut"`
+	Proxies map[string]string `json:"Proxies"`
+	//Verify  bool                   `json:"Verify"`
+	//Cert    bool                   `json:"Cert"`
 }
 
 func RequestProcess(method string, args Args) (response []byte, err error) {
@@ -98,9 +99,12 @@ func RequestProcess(method string, args Args) (response []byte, err error) {
 	client = &http.Client{
 		Timeout: time.Duration(httpConfig.TimeOut) * time.Second,
 	}
-	resp, _ := client.Do(request)
-
+	resp, err := client.Do(request)
+	if err != nil {
+		return []byte(""), err
+	}
 	responseContent, err := io.ReadAll(resp.Body)
+
 	_ = resp.Body.Close()
 	return responseContent, err
 }
@@ -108,7 +112,7 @@ func RequestProcess(method string, args Args) (response []byte, err error) {
 func Get(args Args) ([]byte, error) {
 	response, err := RequestProcess("GET", args)
 	if err != nil {
-		panic(err.Error())
+		zap.S().Errorf("%s", err.Error())
 	}
 	return response, nil
 }
@@ -116,15 +120,7 @@ func Get(args Args) ([]byte, error) {
 func Post(args Args) ([]byte, error) {
 	response, err := RequestProcess("POST", args)
 	if err != nil {
-		panic(err.Error())
-	}
-	return response, nil
-}
-
-func Put(args Args) ([]byte, error) {
-	response, err := RequestProcess("PUT", args)
-	if err != nil {
-		panic(err.Error())
+		zap.S().Errorf("%s", err.Error())
 	}
 	return response, nil
 }
