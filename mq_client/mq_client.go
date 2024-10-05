@@ -12,7 +12,7 @@ var mqttCfg, _ = config.InitConfig()
 
 func GetMqttClient(cfg *config.MqttConfig) mqtt.Client {
 	// Create MQTT client option
-	opts := mqtt.NewClientOptions().AddBroker(fmt.Sprintf("tcp://%s:%s", cfg.Broker, strconv.Itoa(cfg.Port)))
+	opts := mqtt.NewClientOptions().AddBroker(fmt.Sprintf("tcp://%s:%s", cfg.BrokerIp, strconv.Itoa(cfg.BrokerPort)))
 	opts.SetClientID(cfg.ClientId)
 	opts.SetUsername(cfg.Username)
 	opts.SetPassword(cfg.Password)
@@ -32,64 +32,13 @@ func GetMqttClient(cfg *config.MqttConfig) mqtt.Client {
 
 func MessageDeal(client mqtt.Client, msg mqtt.Message) {
 	// Process received messages
-
 	messageTopic := msg.Topic()
 	payLoad := string(msg.Payload())
 	reader := client.OptionsReader()
 	clientId := reader.ClientID()
-
-	for _, broker := range mqttCfg.Brokers {
-
-		if clientId != broker.ClientId {
-			continue
-		}
-		fmt.Println(messageTopic, payLoad)
-		//if clientId == "go-mqtt-client-1" {
-		//	fmt.Println(clientId, broker.ClientId)
-		//	fmt.Println(messageTopic)
-		//	for _, SubDeal := range broker.SubDealSlice {
-		//		for _, excludeTopic := range SubDeal.ExcludeTopics {
-		//			// match topic name
-		//			//fmt.Println(excludeTopic, messageTopic)
-		//			ok, err := regexp.MatchString(excludeTopic, messageTopic)
-		//			if err != nil {
-		//				zap.S().Errorf("%s", err)
-		//			}
-		//			// exclude topic
-		//			if ok {
-		//				continue
-		//			}
-		//			for _, url := range SubDeal.ApiCallbackUrl {
-		//				go DealSubscribeTopic(SubDeal.CallbackMethod, url, payLoad, SubDeal.Retry.MaxAttempts)
-		//			}
-		//			zap.S().Infof("ClientId：%s %s Message: %s", clientId, messageTopic, payLoad)
-		//		}
-		//	}
-		//}
-	}
-}
-
-func DealSubscribeTopic(callbackMethod string, url string, payLoad string, retry int) {
-	//fmt.Println(callbackMethod, url, payLoad)
-}
-
-func Subscribe(c mqtt.Client, topic string, qos byte) {
-	if token := c.Subscribe(topic, qos, nil); token.Wait() && token.Error() != nil {
-		panic(token.Error())
-	}
+	fmt.Println(clientId, messageTopic, payLoad)
 }
 
 func Publish(c mqtt.Client, topic string, payload []byte) {
 	c.Publish(topic, 0, false, payload)
-}
-
-func DealBrokerMessage(cfg *config.MqttConfig) {
-	// Subscription Topic
-	dvgList := cfg.SubDealSlice
-	for _, v := range dvgList {
-		c := GetMqttClient(cfg)
-		for _, topic := range v.Topics {
-			Subscribe(c, topic.Topic, topic.Qos)
-		}
-	}
 }
