@@ -1,14 +1,58 @@
 {
-  "mqtt_config": {
-    "client_id": "go-mqtt-client",
-    "username": "",
-    "password": "",
-    "alive": 60,
-    "broker": "127.0.0.1",
-    "port": 1883
-  },
+  "mqtt_brokers": [
+    {
+      "client_id": "go-mqtt-client-1",
+      "username": "",
+      "password": "",
+      "alive": 60,
+      "broker_ip": "127.0.0.1",
+      "broker_port": 1883,
+      "sub_deal_config": {
+        "app_name": "test1",
+        "app_id": "123",
+        "enabled": true,
+        "callbackMethod": "HTTP",
+        "callbackAddress": [
+          "http://127.0.0.1:8000/api/test"
+        ],
+        "subTopic": {
+          "topic": "from/v1/#",
+          "qos": 0
+        },
+        "excludeTopics": [
+          "from/v1/aaa/"
+        ],
+        "retry": 5
+      }
+    },
+    {
+      "client_id": "go-mqtt-client-2",
+      "username": "",
+      "password": "",
+      "alive": 60,
+      "broker_ip": "127.0.0.1",
+      "broker_port": 1883,
+      "sub_deal_config": {
+        "app_name": "test1",
+        "app_id": "123",
+        "enabled": true,
+        "callbackMethod": "HTTP",
+        "callbackAddress": [
+          "http://127.0.0.1:8000/api/test2"
+        ],
+        "subTopic": {
+          "topic": "from/v1/#",
+          "qos": 0
+        },
+        "excludeTopics": [
+          "from/v1/aaa/"
+        ],
+        "retry": 5
+      }
+    }
+  ],
   "log_config": {
-    "level": "debug",
+    "level": "info",
     "filename": "logs/mqtt.log",
     "maxsize": 1,
     "max_age": 7,
