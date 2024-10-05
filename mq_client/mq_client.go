@@ -8,7 +8,32 @@ import (
 	"time"
 )
 
-var mqttCfg, _ = config.InitConfig()
+type MqClientHandler struct {
+	MqClient      mqtt.Client     `json:"mq_client"`
+	SubDealConfig *config.SubDeal `json:"sub_deal_config"`
+}
+
+func (mq *MqClientHandler) SubProcess() error {
+	cfg := mq.SubDealConfig
+	token := mq.MqClient.Subscribe(cfg.SubTopic.Topic, cfg.SubTopic.Qos, mq.MessageDeal)
+	if token != nil {
+		return token.Error()
+	}
+	return nil
+}
+
+func (mq *MqClientHandler) MessageDeal(client mqtt.Client, msg mqtt.Message) {
+	// Process received messages
+	messageTopic := msg.Topic()
+	payLoad := string(msg.Payload())
+	reader := client.OptionsReader()
+	clientId := reader.ClientID()
+	fmt.Println(clientId, messageTopic, payLoad)
+}
+
+func (mq *MqClientHandler) Publish(topic string, payload []byte) {
+	mq.MqClient.Publish(topic, 0, false, payload)
+}
 
 func GetMqttClient(cfg *config.MqttConfig) mqtt.Client {
 	// Create MQTT client option
@@ -20,7 +45,6 @@ func GetMqttClient(cfg *config.MqttConfig) mqtt.Client {
 	opts.SetAutoReconnect(true)
 
 	opts.SetKeepAlive(time.Duration(cfg.Alive) * time.Second)
-	opts.SetDefaultPublishHandler(MessageDeal)
 
 	// Create client
 	c := mqtt.NewClient(opts)
@@ -28,17 +52,4 @@ func GetMqttClient(cfg *config.MqttConfig) mqtt.Client {
 		panic(token.Error())
 	}
 	return c
-}
-
-func MessageDeal(client mqtt.Client, msg mqtt.Message) {
-	// Process received messages
-	messageTopic := msg.Topic()
-	payLoad := string(msg.Payload())
-	reader := client.OptionsReader()
-	clientId := reader.ClientID()
-	fmt.Println(clientId, messageTopic, payLoad)
-}
-
-func Publish(c mqtt.Client, topic string, payload []byte) {
-	c.Publish(topic, 0, false, payload)
 }
