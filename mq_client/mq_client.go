@@ -52,6 +52,7 @@ func (mq *MqClientHandler) DealExcludeTopic(receiveTopic string) bool {
 		exclude, err := regexp.MatchString(i, receiveTopic)
 		if err != nil {
 			zap.Error(err)
+			return true
 		}
 		if exclude {
 			return true
