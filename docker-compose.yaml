@@ -6,6 +6,8 @@ services:
     restart: always
     environment:
       - EMQX_HOST=0.0.0.0
+      - EMQX_USERNAME=mqTest
+      - EMQX_PASSWORD=mqTest
     ports:
       - '1883:1883'
       - '8084:8084'

@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 func StructToMapString(schema interface{}) (map[string]string, error) {
@@ -15,7 +16,7 @@ func StructToMapString(schema interface{}) (map[string]string, error) {
 	resultMap := make(map[string]string)
 	for i := 0; i < val.NumField(); i++ {
 		field := val.Field(i)
-		fieldName := typ.Field(i).Name
+		fieldName := strings.ToLower(typ.Field(i).Name)
 		resultMap[fieldName] = fmt.Sprintf("%v", field.Interface())
 	}
 	return resultMap, nil

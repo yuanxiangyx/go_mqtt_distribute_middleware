@@ -1,6 +1,6 @@
 package schemas
 
 type MqSchema struct {
-	Header string
-	Body   string
+	Header string `json:"header"`
+	Body   string `json:"body"`
 }
