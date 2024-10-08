@@ -24,15 +24,10 @@ func MqProcess(cfg *config.Config) {
 	if err != nil {
 		panic(err)
 	}
-	// Loop to maintain client connectivity
-	//for {
-	//	time.Sleep(10 * time.Millisecond)
-	//}
 }
 
 func WebApp() error {
 	r := gin.Default()
-	// 返回一个json数据
 	r.GET("/test", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"code":    http.StatusOK,
