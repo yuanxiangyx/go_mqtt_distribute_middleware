@@ -1,11 +1,10 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	config "mqtt_pro/config"
+	utils2 "mqtt_pro/apps/utils"
+	"mqtt_pro/config"
 	"mqtt_pro/mq_client"
 	"mqtt_pro/utils"
-	"net/http"
 )
 
 func SubAllMqttMessage(MqClientHandler []mq_client.MqClientHandler) error {
@@ -27,15 +26,8 @@ func MqProcess(cfg *config.Config) {
 }
 
 func WebApp() error {
-	r := gin.Default()
-	r.GET("/test", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"code":    http.StatusOK,
-			"message": "ok",
-		})
-	})
-
-	return r.Run()
+	apiRoute := utils2.InitRouter()
+	return apiRoute.Run()
 }
 
 func main() {
