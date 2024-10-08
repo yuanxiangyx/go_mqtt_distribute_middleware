@@ -1,7 +1,7 @@
 package main
 
 import (
-	utils2 "mqtt_pro/apps/utils"
+	"mqtt_pro/apps"
 	"mqtt_pro/config"
 	"mqtt_pro/mq_client"
 	"mqtt_pro/utils"
@@ -25,11 +25,6 @@ func MqProcess(cfg *config.Config) {
 	}
 }
 
-func WebApp() error {
-	apiRoute := utils2.InitRouter()
-	return apiRoute.Run()
-}
-
 func main() {
 	cfg, err := config.InitConfig()
 	if err != nil {
@@ -40,7 +35,7 @@ func main() {
 		panic(err)
 	}
 	go MqProcess(cfg)
-	err = WebApp()
+	err = apps.WebApp()
 	if err != nil {
 		panic(err)
 	}
