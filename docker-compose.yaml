@@ -13,3 +13,12 @@ services:
       - '8084:8084'
       - '8883:8883'
       - '18083:18083'
+  mqtt-bridge:
+    image: mqtt_bridge
+    container_name: mqtt-bridge
+    restart: always
+    command: /app/run
+    network_mode: host
+    volumes:
+      - ./logs:/app/logs
+      - config.json:/app/config.json
