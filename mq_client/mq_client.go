@@ -75,6 +75,8 @@ func (mq *MqClientHandler) RetryCallBack(callbackMethod string, payLoad string) 
 			err = mq.HttpCallBackDeal(payLoad)
 		case "HTTPS":
 			err = mq.HttpCallBackDeal(payLoad)
+		case "GRPC":
+
 		}
 
 		if err == nil {
