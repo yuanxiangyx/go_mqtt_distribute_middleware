@@ -88,7 +88,6 @@ func (mq *MqClientHandler) RetryCallBack(callbackMethod string, payLoad string) 
 
 func (mq *MqClientHandler) HttpCallBackDeal(payLoad string) (err error) {
 	for _, addr := range mq.SubDealConfig.CallbackAddress {
-
 		mapData, _ := utils.ParserPayLoadDataToMap(payLoad)
 		data, err := requests.Post(requests.Args{
 			Url:  addr,
