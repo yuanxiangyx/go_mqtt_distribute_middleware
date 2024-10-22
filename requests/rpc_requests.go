@@ -4,24 +4,24 @@ import (
 	"context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"log"
 	mq_rpc_message "mqtt_pro/mq_grpc/pb"
+	"mqtt_pro/schemas"
 	"time"
 )
 
-func GrpcRequest() {
-	conn, err := grpc.NewClient("127.0.0.1:8972", grpc.WithTransportCredentials(insecure.NewCredentials()))
+func GrpcRequest(rpcAddr string, mqMessage schemas.MqSchema) (data string, err error) {
+	conn, err := grpc.NewClient(rpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		return "", err
 	}
 	defer conn.Close()
 	c := mq_rpc_message.NewMqGreeterRpcServiceClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	r, err := c.SendMqMessage(ctx, &mq_rpc_message.MqRpcRequest{Header: "aaa", Body: "vvv"})
+	r, err := c.SendMqMessage(ctx, &mq_rpc_message.MqRpcRequest{Header: mqMessage.Header, Body: mqMessage.Body})
 	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		return "", err
 	}
-	log.Printf("Greeting: %s", r.Message)
+	return r.String(), nil
 }

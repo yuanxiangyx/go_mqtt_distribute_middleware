@@ -14,7 +14,7 @@ type server struct {
 
 func (s *server) SendMqMessage(ctx context.Context, in *__.MqRpcRequest) (*__.MqRpcResponse, error) {
 	fmt.Println(in.String())
-	return &__.MqRpcResponse{Message: "Hello " + in.String()}, nil
+	return &__.MqRpcResponse{Code: 200, Message: "Success"}, nil
 }
 
 func RpcRun() {

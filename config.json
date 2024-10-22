@@ -36,9 +36,9 @@
         "app_name": "test2",
         "app_id": "123",
         "enabled": true,
-        "callbackMethod": "HTTP",
+        "callbackMethod": "GRPC",
         "callbackAddress": [
-          "http://127.0.0.1:8000/api/test2"
+          "127.0.0.1:8972"
         ],
         "subTopic": {
           "topic": "from/v1/#",
