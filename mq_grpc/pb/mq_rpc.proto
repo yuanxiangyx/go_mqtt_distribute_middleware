@@ -1,0 +1,19 @@
+syntax = "proto3";
+option go_package = "mq_rpc_message";
+
+package mq_grpc;
+
+message MqRpcRequest {
+  string header = 1;
+  string body = 2;
+}
+
+message MqRpcResponse {
+  int64 code = 1;
+  string message = 2;
+}
+
+service MqGreeterRpcService {
+  rpc SendMqMessage (MqRpcRequest) returns (MqRpcResponse);
+}
+

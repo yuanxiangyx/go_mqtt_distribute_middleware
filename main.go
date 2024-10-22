@@ -1,7 +1,7 @@
 package main
 
 import (
-	config "mqtt_pro/config"
+	"mqtt_pro/config"
 	"mqtt_pro/mq_client"
 	"mqtt_pro/utils"
 	"time"
