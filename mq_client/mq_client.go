@@ -110,15 +110,13 @@ func (mq *MqClientHandler) HttpCallBackDeal(payLoad string) (err error) {
 }
 
 func (mq *MqClientHandler) GrpcCallBackDeal(payLoad string) error {
-	var err error
 	for _, addr := range mq.SubDealConfig.CallbackAddress {
-		var schema schemas.MqSchema
-		err = json.Unmarshal([]byte(payLoad), &schema)
-		if err != nil {
-			zap.Error(err)
-			return err
+		headString, bodyString := utils.ParserPayLoadData(payLoad)
+		stringSchema := schemas.MqStringSchema{
+			Header: headString,
+			Body:   bodyString,
 		}
-		data, err := requests.GrpcRequest(addr, schema)
+		data, err := requests.GrpcRequest(addr, stringSchema)
 		if err != nil {
 			zap.S().Errorf("Post data response: %s", data)
 			return err

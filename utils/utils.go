@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
+	"mqtt_pro/schemas"
 	"reflect"
 	"strings"
 )
@@ -20,4 +22,17 @@ func StructToMapString(schema interface{}) (map[string]string, error) {
 		resultMap[fieldName] = fmt.Sprintf("%v", field.Interface())
 	}
 	return resultMap, nil
+}
+
+func ParserPayLoadData(data string) (head string, body string) {
+	var mqString schemas.MqStringSchema
+	err := json.Unmarshal([]byte(data), &mqString)
+	if err == nil {
+		return mqString.Header, mqString.Body
+	}
+	var mqSchema schemas.MqSchema
+	json.Unmarshal([]byte(data), &mqSchema)
+	headString, _ := json.Marshal(mqSchema.Header)
+	bodyString, _ := json.Marshal(mqSchema.Body)
+	return string(headString), string(bodyString)
 }

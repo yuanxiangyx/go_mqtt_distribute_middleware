@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func GrpcRequest(rpcAddr string, mqMessage schemas.MqSchema) (data string, err error) {
+func GrpcRequest(rpcAddr string, mqMessage schemas.MqStringSchema) (data string, err error) {
 	conn, err := grpc.NewClient(rpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return "", err
@@ -23,5 +23,6 @@ func GrpcRequest(rpcAddr string, mqMessage schemas.MqSchema) (data string, err e
 	if err != nil {
 		return "", err
 	}
+
 	return r.String(), nil
 }
