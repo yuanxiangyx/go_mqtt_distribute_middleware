@@ -76,9 +76,8 @@ func (mq *MqClientHandler) RetryCallBack(callbackMethod string, payLoad string) 
 		case "HTTPS":
 			err = mq.HttpCallBackDeal(payLoad)
 		case "GRPC":
-
+			err = mq.GrpcCallBackDeal(payLoad)
 		}
-
 		if err == nil {
 			return
 		} else {
@@ -88,13 +87,13 @@ func (mq *MqClientHandler) RetryCallBack(callbackMethod string, payLoad string) 
 	}
 }
 
-func (mq *MqClientHandler) HttpCallBackDeal(payLoad string) error {
-	var err error
+func (mq *MqClientHandler) HttpCallBackDeal(payLoad string) (err error) {
 	for _, addr := range mq.SubDealConfig.CallbackAddress {
 		var schema schemas.MqSchema
 		err = json.Unmarshal([]byte(payLoad), &schema)
 		if err != nil {
 			zap.Error(err)
+			return err
 		}
 		mapData, _ := utils.StructToMapString(schema)
 		data, err := requests.Post(requests.Args{
@@ -103,10 +102,30 @@ func (mq *MqClientHandler) HttpCallBackDeal(payLoad string) error {
 		})
 		if err != nil {
 			zap.S().Errorf("Post data response: %s", string(data))
+			return err
 		}
 		zap.S().Infof("%s-->%s Post data response: %s", mq.SubDealConfig.AppId, mq.SubDealConfig.AppName, string(data))
 	}
-	return err
+	return nil
+}
+
+func (mq *MqClientHandler) GrpcCallBackDeal(payLoad string) error {
+	var err error
+	for _, addr := range mq.SubDealConfig.CallbackAddress {
+		var schema schemas.MqSchema
+		err = json.Unmarshal([]byte(payLoad), &schema)
+		if err != nil {
+			zap.Error(err)
+			return err
+		}
+		data, err := requests.GrpcRequest(addr, schema)
+		if err != nil {
+			zap.S().Errorf("Post data response: %s", data)
+			return err
+		}
+		zap.S().Infof("%s-->%s Grpc response: %s", mq.SubDealConfig.AppId, mq.SubDealConfig.AppName, data)
+	}
+	return nil
 }
 
 func (mq *MqClientHandler) Publish(topic string, payload []byte) {

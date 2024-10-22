@@ -1,10 +1,10 @@
 package main
 
 import (
-	"mqtt_pro/config"
+	"fmt"
 	"mqtt_pro/mq_client"
-	"mqtt_pro/utils"
-	"time"
+	"mqtt_pro/requests"
+	"mqtt_pro/schemas"
 )
 
 func SubAllMqttMessage(MqClientHandler []mq_client.MqClientHandler) error {
@@ -18,21 +18,27 @@ func SubAllMqttMessage(MqClientHandler []mq_client.MqClientHandler) error {
 }
 
 func main() {
-	cfg, err := config.InitConfig()
+	//cfg, err := config.InitConfig()
+	//if err != nil {
+	//	panic(err)
+	//}
+	//err = utils.InitLogger(cfg)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//// Sub All Messages
+	//err = SubAllMqttMessage(mq_client.InitMqClient(cfg))
+	//if err != nil {
+	//	panic(err)
+	//}
+	//// Loop to maintain client connectivity
+	//for {
+	//	time.Sleep(10 * time.Millisecond)
+	//}
+	res, err := requests.GrpcRequest("127.0.0.1:8972", schemas.MqSchema{Header: "sad", Body: "asd"})
 	if err != nil {
-		panic(err)
+		fmt.Println("err：", err)
+		return
 	}
-	err = utils.InitLogger(cfg)
-	if err != nil {
-		panic(err)
-	}
-	// Sub All Messages
-	err = SubAllMqttMessage(mq_client.InitMqClient(cfg))
-	if err != nil {
-		panic(err)
-	}
-	// Loop to maintain client connectivity
-	for {
-		time.Sleep(10 * time.Millisecond)
-	}
+	fmt.Println(res)
 }
