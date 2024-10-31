@@ -55,7 +55,6 @@ topicConfig：
 | 名称 | 类型 | 必选 | 说明 |
 | --- | --- | --- | --- |
 | level | str | 是 | 日志记录等级 |
-| filename | str | 是 | 日志文件名 |
 | maxsize | int | 是 | 日志大小，单位MB |
 | max_age | int | 是 | 日志保留的天数，单位天 |
 | max_backups | int | 是 | 日志保留的最大数量 |
@@ -118,7 +117,6 @@ topicConfig：
   ],
   "log_config": {
     "level": "info",
-    "filename": "logs/mqtt.log",
     "maxsize": 1,
     "max_age": 7,
     "max_backups": 3

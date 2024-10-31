@@ -55,7 +55,6 @@ topicConfig：
 | Name | Type | Mandatory  | Explain |
 | --- | --- | --- | --- |
 | level | str | true | Logging level |
-| filename | str | true | Log file name |
 | maxsize | int | true | Log size, in MB |
 | max_age | int | true | The number of days to retain logs, in days |
 | max_backups | int | true | Maximum number of logs retained |
@@ -118,7 +117,6 @@ topicConfig：
   ],
   "log_config": {
     "level": "info",
-    "filename": "logs/mqtt.log",
     "maxsize": 1,
     "max_age": 7,
     "max_backups": 3

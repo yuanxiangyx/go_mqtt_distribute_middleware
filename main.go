@@ -2,8 +2,8 @@ package main
 
 import (
 	"mqtt_pro/config"
+	"mqtt_pro/logger"
 	"mqtt_pro/mq_client"
-	"mqtt_pro/utils"
 	"time"
 )
 
@@ -22,7 +22,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = utils.InitLogger(cfg)
+	logger.InitGroupLog(cfg.LogOption)
 	if err != nil {
 		panic(err)
 	}

@@ -1,4 +1,4 @@
-package utils
+package logger
 
 import (
 	"go.uber.org/zap"
@@ -7,28 +7,15 @@ import (
 	"mqtt_pro/config"
 )
 
-var logger *zap.Logger
-
-func InitLogger(cfg *config.Config) (err error) {
-	/*
-		Log initialization
-		Customize the format of logs
-	*/
-	writeSyncer := getLogWriter(cfg.Filename, cfg.MaxSize, cfg.MaxBackups, cfg.MaxAge)
+func InitLogger(logName string, cfg *config.LogOption) (log *zap.Logger) {
+	writeSyncer := getLogWriter(logName, cfg.MaxSize, cfg.MaxBackups, cfg.MaxAge)
 	encoder := getEncoder()
 	var l = new(zapcore.Level)
-	if err = l.UnmarshalText([]byte(cfg.Level)); err != nil {
-		return
+	if err := l.UnmarshalText([]byte(cfg.Level)); err != nil {
+		return nil
 	}
 	core := zapcore.NewCore(encoder, writeSyncer, l)
-	logger = zap.New(core, zap.AddCaller())
-
-	/*
-		Used in the project development phase, format: regular text format [suitable for viewing on the terminal]
-		Replaced the global log configuration of Zap
-	*/
-	zap.ReplaceGlobals(logger)
-	return
+	return zap.New(core, zap.AddCaller())
 }
 
 func getEncoder() zapcore.Encoder {
@@ -49,4 +36,26 @@ func getLogWriter(filename string, maxSize, maxBackup, maxAge int) zapcore.Write
 		MaxAge:     maxAge,
 	}
 	return zapcore.AddSync(lumberJackLogger)
+}
+
+type LogGroupS struct {
+	ErrLog  *zap.Logger
+	InfoLog *zap.Logger
+}
+
+var LogGroup *LogGroupS
+
+func InitGroupLog(option *config.LogOption) {
+	LogGroup = &LogGroupS{
+		InfoLog: InitLogger("logs/info.log", option),
+		ErrLog:  InitLogger("logs/err.log", option),
+	}
+}
+
+func WInfo(msg string) {
+	LogGroup.InfoLog.Info(msg)
+}
+
+func WError(msg string) {
+	LogGroup.ErrLog.Error(msg)
 }

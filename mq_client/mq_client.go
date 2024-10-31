@@ -5,6 +5,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"go.uber.org/zap"
 	"mqtt_pro/config"
+	"mqtt_pro/logger"
 	"mqtt_pro/requests"
 	"mqtt_pro/schemas"
 	"mqtt_pro/utils"
@@ -94,10 +95,10 @@ func (mq *MqClientHandler) HttpCallBackDeal(payLoad string) (err error) {
 			Json: mapData,
 		})
 		if err != nil {
-			zap.S().Errorf("Post data err response: %s", string(data))
+			logger.WError(fmt.Sprintf("Post data err response: %s", string(data)))
 			return err
 		}
-		zap.S().Infof("%s-->%s Post data response: %s", mq.SubDealConfig.AppId, mq.SubDealConfig.AppName, string(data))
+		logger.WInfo(fmt.Sprintf("%s-->%s Post data response: %s", mq.SubDealConfig.AppId, mq.SubDealConfig.AppName, string(data)))
 	}
 	return nil
 }
@@ -111,10 +112,10 @@ func (mq *MqClientHandler) GrpcCallBackDeal(payLoad string) error {
 		}
 		data, err := requests.GrpcRequest(addr, stringSchema)
 		if err != nil {
-			zap.S().Errorf("Grpc response: %s", data)
+			logger.WError(fmt.Sprintf("Grpc response: %s", data))
 			return err
 		}
-		zap.S().Infof("%s-->%s Grpc response: %s", mq.SubDealConfig.AppId, mq.SubDealConfig.AppName, data)
+		logger.WInfo(fmt.Sprintf("%s-->%s Grpc response: %s", mq.SubDealConfig.AppId, mq.SubDealConfig.AppName, data))
 	}
 	return nil
 }

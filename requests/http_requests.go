@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"go.uber.org/zap"
 	"io"
+	"mqtt_pro/logger"
 	"net/http"
 	"time"
 )
@@ -112,7 +112,7 @@ func RequestProcess(method string, args Args) (response []byte, err error) {
 func Get(args Args) ([]byte, error) {
 	response, err := RequestProcess("GET", args)
 	if err != nil {
-		zap.S().Errorf("%s", err.Error())
+		logger.WError(err.Error())
 	}
 	return response, nil
 }
@@ -120,7 +120,7 @@ func Get(args Args) ([]byte, error) {
 func Post(args Args) ([]byte, error) {
 	response, err := RequestProcess("POST", args)
 	if err != nil {
-		zap.S().Errorf("%s", err.Error())
+		logger.WError(err.Error())
 	}
 	return response, nil
 }

@@ -8,7 +8,7 @@ import (
 
 type Config struct {
 	Brokers    []*MqttConfig `json:"mqtt_brokers"`
-	*LogConfig `json:"log_config"`
+	*LogOption `json:"log_config"`
 }
 
 type MqttConfig struct {
@@ -37,9 +37,8 @@ type TopicConfig struct {
 	Qos   byte   `json:"qos"`
 }
 
-type LogConfig struct {
+type LogOption struct {
 	Level      string `json:"level"`
-	Filename   string `json:"filename"`
 	MaxSize    int    `json:"maxSize"`
 	MaxAge     int    `json:"max_age"`
 	MaxBackups int    `json:"max_backups"`
