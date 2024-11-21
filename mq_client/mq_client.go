@@ -21,7 +21,7 @@ type MqClientHandler struct {
 }
 
 // SubProcess  Subscription topic
-func (mq *MqClientHandler) SubProcess() error {
+func (mq MqClientHandler) SubProcess() error {
 	cfg := mq.SubDealConfig
 	token := mq.MqClient.Subscribe(cfg.SubTopic.Topic, cfg.SubTopic.Qos, mq.MessageDeal)
 	if token != nil {
@@ -31,7 +31,7 @@ func (mq *MqClientHandler) SubProcess() error {
 }
 
 // MessageDeal Process received messages
-func (mq *MqClientHandler) MessageDeal(client mqtt.Client, msg mqtt.Message) {
+func (mq MqClientHandler) MessageDeal(client mqtt.Client, msg mqtt.Message) {
 	messageTopic := msg.Topic()
 	payLoad := string(msg.Payload())
 	//reader := client.OptionsReader()
@@ -47,7 +47,7 @@ func (mq *MqClientHandler) MessageDeal(client mqtt.Client, msg mqtt.Message) {
 }
 
 // DealExcludeTopic Topic for handling filtering
-func (mq *MqClientHandler) DealExcludeTopic(receiveTopic string) bool {
+func (mq MqClientHandler) DealExcludeTopic(receiveTopic string) bool {
 	for _, i := range mq.SubDealConfig.ExcludeTopics {
 		exclude, err := regexp.MatchString(i, receiveTopic)
 		if err != nil {
@@ -61,12 +61,12 @@ func (mq *MqClientHandler) DealExcludeTopic(receiveTopic string) bool {
 	return false
 }
 
-func (mq *MqClientHandler) DistributeTopicContent(payLoad string) {
+func (mq MqClientHandler) DistributeTopicContent(payLoad string) {
 	callbackMethod := strings.ToUpper(mq.SubDealConfig.CallbackMethod)
 	go mq.RetryCallBack(callbackMethod, payLoad)
 }
 
-func (mq *MqClientHandler) RetryCallBack(callbackMethod string, payLoad string) {
+func (mq MqClientHandler) RetryCallBack(callbackMethod string, payLoad string) {
 	retryCount := 0
 	for retryCount <= mq.SubDealConfig.Retry {
 		var err error
@@ -87,7 +87,7 @@ func (mq *MqClientHandler) RetryCallBack(callbackMethod string, payLoad string) 
 	}
 }
 
-func (mq *MqClientHandler) HttpCallBackDeal(payLoad string) (err error) {
+func (mq MqClientHandler) HttpCallBackDeal(payLoad string) (err error) {
 	for _, addr := range mq.SubDealConfig.CallbackAddress {
 		mapData, _ := utils.ParserPayLoadDataToMap(payLoad)
 		data, err := requests.Post(requests.Args{
@@ -103,7 +103,7 @@ func (mq *MqClientHandler) HttpCallBackDeal(payLoad string) (err error) {
 	return nil
 }
 
-func (mq *MqClientHandler) GrpcCallBackDeal(payLoad string) error {
+func (mq MqClientHandler) GrpcCallBackDeal(payLoad string) error {
 	for _, addr := range mq.SubDealConfig.CallbackAddress {
 		headString, bodyString := utils.ParserPayLoadDataToString(payLoad)
 		stringSchema := schemas.MqStringSchema{
@@ -120,7 +120,7 @@ func (mq *MqClientHandler) GrpcCallBackDeal(payLoad string) error {
 	return nil
 }
 
-func (mq *MqClientHandler) Publish(topic string, payload []byte) {
+func (mq MqClientHandler) Publish(topic string, payload []byte) {
 	mq.MqClient.Publish(topic, 0, false, payload)
 }
 
