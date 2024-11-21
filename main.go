@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"mqtt_pro/config"
 	"mqtt_pro/logger"
 	"mqtt_pro/mq_client"
@@ -32,6 +33,13 @@ func main() {
 		panic(err)
 	}
 	// Loop to maintain client connectivity
+	fmt.Println("start...........success")
+	fmt.Println(`
+       ██     ██       
+      █  █   █  █	
+     █    █ █    █       
+    █     ███     █      
+`)
 	for {
 		time.Sleep(10 * time.Millisecond)
 	}
