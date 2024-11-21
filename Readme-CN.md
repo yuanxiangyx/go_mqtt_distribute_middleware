@@ -1,5 +1,3 @@
-[中文](about:blank)|[English](about:blank)
-
 # 简述：
 伴随着物联网技术的逐渐普及，网络的复杂度越来越高，面对海量的设备信息数据，例如智能驾驶，工业设备等，HTTP/HTTPS协议在如此大规模的系统中很难满足响应需求，而MQTT以其轻巧高效、可靠安全、双向通讯等诸多优势，已然在物联网行业中成为主流协议。
 
@@ -51,7 +49,7 @@ topicConfig：
 | retry | int | 是 | 消息处理异常重试次数 |
 
 
-### log_config:  
+### log_config:
 | 名称 | 类型 | 必选 | 说明 |
 | --- | --- | --- | --- |
 | level | str | 是 | 日志记录等级 |
@@ -73,11 +71,11 @@ topicConfig：
       "broker_port": 1883,
       "sub_deal_config": {
         "app_name": "test1",
-        "app_id": "123",
+        "app_id": "221",
         "enabled": true,
         "callbackMethod": "HTTP",
         "callbackAddress": [
-          "http://127.0.0.1:8000/api/test"
+          "http://127.0.0.1:8000/api"
         ],
         "subTopic": {
           "topic": "from/v1/#",
@@ -100,9 +98,9 @@ topicConfig：
         "app_name": "test2",
         "app_id": "123",
         "enabled": true,
-        "callbackMethod": "HTTP",
+        "callbackMethod": "GRPC",
         "callbackAddress": [
-          "http://127.0.0.1:8000/api/test2"
+          "127.0.0.1:8972"
         ],
         "subTopic": {
           "topic": "from/v1/#",
@@ -117,7 +115,7 @@ topicConfig：
   ],
   "log_config": {
     "level": "info",
-    "maxsize": 1,
+    "maxsize": 200,
     "max_age": 7,
     "max_backups": 3
   }
@@ -131,6 +129,15 @@ MQTT消息格式分为header和body，消息格式如下：
 {
   "header":"2024-10-06 10:57:30.220911642 +0800 CST m=+108.080484125",
   "body":"2024-10-06 10:57:30.220927581 +0800 CST m=+108.080500051"
+}
+```
+
+或者
+
+```json
+{
+  "header":{},
+  "body":{}
 }
 ```
 
@@ -155,15 +162,9 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-@app.post('/api/test')
+@app.post('/api')
 async def test(data: dict = {}):
     print("test1:", data)
-    return {"code": 200, "msg": data}
-
-
-@app.post('/api/test2')
-async def test2(data: dict = {}):
-    print("test2:", data)
     return {"code": 200, "msg": data}
 
 
@@ -182,14 +183,9 @@ uvicorn main:app --reload
 ## 支持：
 已实现多Mqtt客户端消息接受、分发、过滤、分发重试等
 
-不同协议分发：
-
-现已实现HTTP/HTTPS服务的分发，后续会迭代加入其他服务协议的分发机制。
+现已实现HTTP/HTTPS/GRPC服务的分发，后续会迭代加入其他服务协议的分发机制。
 
 ## 迭代：
-后续考虑接入GPRC、数据库、其他中间件服务（例如kafka等）
-
-消息格式可配置等
-
+后续考虑接入数据库、其他中间件服务（例如kafka等）
 
 

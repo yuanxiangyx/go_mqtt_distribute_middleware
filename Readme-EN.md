@@ -1,5 +1,3 @@
-[Chinese](about:blank)|[English](about:blank)
-
 # Sketch：
 With the gradual popularization of IoT technology, the complexity of networks is increasing. Faced with massive amounts of device information data, such as intelligent driving, industrial equipment, etc., HTTP/HTTPS protocol is difficult to meet response needs in such a large-scale system. MQTT, with its advantages of lightweight, high efficiency, reliable security, and bidirectional communication, has become the mainstream protocol in the IoT industry.
 
@@ -51,10 +49,11 @@ topicConfig：
 | retry | int | true | Number of message processing exception retries |
 
 
-### log_config:  
+### log_config:
 | Name | Type | Mandatory  | Explain |
 | --- | --- | --- | --- |
 | level | str | true | Logging level |
+| filename | str | true | Log file name |
 | maxsize | int | true | Log size, in MB |
 | max_age | int | true | The number of days to retain logs, in days |
 | max_backups | int | true | Maximum number of logs retained |
@@ -73,11 +72,11 @@ topicConfig：
       "broker_port": 1883,
       "sub_deal_config": {
         "app_name": "test1",
-        "app_id": "123",
+        "app_id": "221",
         "enabled": true,
         "callbackMethod": "HTTP",
         "callbackAddress": [
-          "http://127.0.0.1:8000/api/test"
+          "http://127.0.0.1:8000/api"
         ],
         "subTopic": {
           "topic": "from/v1/#",
@@ -100,9 +99,9 @@ topicConfig：
         "app_name": "test2",
         "app_id": "123",
         "enabled": true,
-        "callbackMethod": "HTTP",
+        "callbackMethod": "GRPC",
         "callbackAddress": [
-          "http://127.0.0.1:8000/api/test2"
+          "127.0.0.1:8972"
         ],
         "subTopic": {
           "topic": "from/v1/#",
@@ -117,7 +116,7 @@ topicConfig：
   ],
   "log_config": {
     "level": "info",
-    "maxsize": 1,
+    "maxsize": 200,
     "max_age": 7,
     "max_backups": 3
   }
@@ -131,6 +130,15 @@ The MQTT message format is divided into header and body, and the message format 
 {
   "header":"2024-10-06 10:57:30.220911642 +0800 CST m=+108.080484125",
   "body":"2024-10-06 10:57:30.220927581 +0800 CST m=+108.080500051"
+}
+```
+
+or
+
+```json
+{
+  "header":{},
+  "body":{}
 }
 ```
 
@@ -155,21 +163,14 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-@app.post('/api/test')
+@app.post('/api')
 async def test(data: dict = {}):
     print("test1:", data)
     return {"code": 200, "msg": data}
 
 
-@app.post('/api/test2')
-async def test2(data: dict = {}):
-    print("test2:", data)
-    return {"code": 200, "msg": data}
-
-
 if __name__ == '__main__':
     uvicorn.run("start:app", host="127.0.0.1", port=8000, workers=1)
-
 ```
 
 function:
@@ -182,14 +183,9 @@ uvicorn main:app --reload
 ## support：
 Multiple Mqtt client message reception, distribution, filtering, distribution retry, etc. have been implemented.
 
-Distribution of different protocols:
-
-The distribution of HTTP/HTTPS services has been implemented, and distribution mechanisms for other service protocols will be iteratively added in the future.
+The distribution of HTTP/HTTPS/GRPC services has been implemented, and distribution mechanisms for other service protocols will be iteratively added in the future.
 
 ## Iteration：
-Consider integrating GPRC, databases, and other middleware services (such as Kafka, etc) in the future
-
-Message format can be configured, etc
-
+Consider integrating databases, and other middleware services (such as Kafka, etc) in the future
 
 
